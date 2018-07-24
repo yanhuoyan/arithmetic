@@ -5,14 +5,22 @@ public class OneWayLinkedList<T> {
 	private Node head;
 	private int size;
 	
+	
+	public void print() {
+		head.print();
+	}
 	public void add(T t) {
+		size++;
 		if(head == null) {
 			head = new Node();
+			head.o = t;
+		} else {
+			head.add(t);
 		}
-		head.add(t);
 	}
 	
 	public void add(T t, int index) {
+		size++;
 		if(head == null) {
 			head = new Node();
 		}
@@ -31,6 +39,7 @@ public class OneWayLinkedList<T> {
 	}
 	
 	public T removeIndex(int index) {
+		size--;
 		if(index == 0 || index > Integer.MAX_VALUE){
 			return null;
 		}
@@ -38,7 +47,12 @@ public class OneWayLinkedList<T> {
 	}
 	
 	public T remove(T t) {
+		size --;
 		return head.remove(t);
+	}
+	
+	public void turn() {
+		head.turn();
 	}
 	
 	public int size() {
@@ -52,6 +66,32 @@ public class OneWayLinkedList<T> {
 		
 		public Node() {
 			super();
+		}
+		public void turn() {
+			
+			Node first = head;
+			Node now = head.next;
+			Node next = now.next;
+			first.next = null;
+			while(next != null) {
+				now.next = first;
+				first = now;
+				now = next;
+				next = now.next;
+			}
+			head = first;
+		}
+		public void print() {
+			StringBuilder s = new StringBuilder("[");
+			Node pre = head;
+			while(pre != null) {
+				s.append(pre.o + ",");
+				pre = pre.next;
+			}
+			s.append("]");
+			System.out.println(s.toString().replaceAll(",]", "]"));
+			
+			
 		}
 		public Node(T o, Node next) {
 			super();
@@ -92,22 +132,58 @@ public class OneWayLinkedList<T> {
 				return result.o;
 			}
 			Node pre = this;
-			
-			
-			return null;
+			int i = 0;
+			while(i <size) {
+				i++;
+				if(i == index) {
+					Node tmp = pre;
+					pre = pre.next;
+					tmp.next = pre.next;
+				} else {
+					pre = pre.next;
+				}
+				
+			}
+			return pre.o;
 		}
 		public int find(T t) {
-			// TODO Auto-generated method stub
-			return 0;
+			Node pre = this;
+			int i = 0;
+			while(pre != null) {
+				if(pre.o.equals(t))
+					return i;
+				pre = pre.next;
+				i++;
+			}
+			return -1;
 		}
 		public T find(int index) {
-			// TODO Auto-generated method stub
+			Node pre = this;
+			int i = 0;
+			
+			while(pre.next != null) {
+				if(i == index)
+					return pre.o;
+				pre = pre.next;
+				i++;
+			}
 			return null;
 		}
 		public void add(T t, int index) {
-			// TODO Auto-generated method stub
-			
+			if(index == 0) {
+				head = new Node(t, this);
+			} else {
+				Node pre = this;
+				int i = 0;
+				
+				while(pre.next != null) {
+					i++;
+					if(i == index){
+						pre.next = new Node(t, pre.next);
+					}
+					pre = pre.next;
+				}
+			}
 		}
-		
 	}
 }
